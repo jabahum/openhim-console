@@ -1,6 +1,6 @@
 version: '3'
 networks:
-  openhim:
+  him:
 
 services:
   mongo-db:
@@ -12,38 +12,38 @@ services:
       - "mongo-data:/data/db"
     restart: unless-stopped
 
-  openhim-core:
-    container_name: openhim-core
-    image: jembi/openhim-core:latest
+  himcore:
+    container_name: himcore
+    image: jabahum/himcore:latest
     restart: unless-stopped
     environment:
       mongo_url: "mongodb://mongo-db/openhim-dev"
       mongo_atnaUrl: "mongodb://mongo-db/openhim-dev"
       NODE_ENV: "production"
     ports:
-      - "8080:8080"
+      - "8081:8081"
       - "6000:5000"
       - "6001:5001"
     networks:
-      - openhim
+      - him
     healthcheck:
      test: "curl -sS http://openhim-core:8080/heartbeat || exit 1"
      interval: 30s
      timeout: 30s
      retries: 3
 
-  openhim-console:
-    container_name: openhim-console
-    image: jembi/openhim-console:latest
+  himconsole:
+    container_name: himconsole
+    image: jabahum/himconsole:latest
     restart: unless-stopped
     networks:
-      - openhim
+      - him
     ports:
       - "9090:80"
     volumes:
       - "../app/config/default.json:/usr/share/nginx/html/config/default.json"
     healthcheck:
-     test: "curl -sS http://openhim-console || exit 1"
+     test: "curl -sS http://himconsole || exit 1"
      interval: 30s
      timeout: 30s
      retries: 3
